@@ -1,22 +1,18 @@
-import movies from '../store/movies';
-
 class MoviesList {
-  constructor(moviesData) {
+  constructor() {
     this.titleContainer = document.querySelector('.movies-container .title');
-    console.log(this.titleContainer);
     this.container = document.querySelector('.movies-container .row');
-    this.moviesData = moviesData;
   }
 
-  setTitle() {
-    const title = this.moviesData.isSearch ? `Search: ${this.moviesData.query}` : 'IMDB Top 250';
-    console.log(`title ${this.moviesData.isSearch} ${title}`);
+  setTitle({ isSearch, query }) {
+    const title = isSearch ? `Search: ${query}` : 'IMDB Top 250';
+    console.log(`title ${isSearch} ${title}`);
     this.titleContainer.textContent = title;
   }
 
-  async createMoviesList() {
-    console.log(this.moviesData);
-    const fragment = Object.values(this.moviesData.movies)
+  async createMoviesList({ movies }) {
+    console.log(movies);
+    const fragment = Object.values(movies)
       .reduce((acc, movie) => acc + MoviesList.movieItemTemplate(movie), '');
     this.container.innerHTML = '';
     this.container.insertAdjacentHTML('afterbegin', fragment);
@@ -42,5 +38,5 @@ class MoviesList {
   }
 }
 
-const moviesList = new MoviesList(movies);
+const moviesList = new MoviesList();
 export default moviesList;

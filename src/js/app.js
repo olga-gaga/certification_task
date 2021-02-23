@@ -17,12 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
   movieContainer.addEventListener('mouseover', onChangeBg);
   movieContainer.addEventListener('click', onShowModal);
   paginationContainer.addEventListener('click', onChangePage);
-  searchInput.addEventListener('input', delay((e) => searchMovies(e), 500));
+  searchInput.addEventListener('input', delay((e) => searchMovies(e), 1000));
   // closeModal.addEventListener('click', modal.close);
 
   async function init() {
     await moviesData.getMoviesIDsPerPage();
-    pagination.initPagination();
+    moviesList.setTitle(moviesData);
+    moviesList.createMoviesList(moviesData);
+    pagination.initPagination(moviesData);
   }
 
   function delay(callback, ms = 0) {
@@ -33,14 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  async function searchMovies({ target }) {
-    const query = target.value;
-    await moviesData.searchMovies(query);
+  function checkMovieModalData(element) {
+    const id = element.dataset.id || null;
+    if (!id) return;
+    return moviesData.movie(id);
   }
 
-  function onChangePage({ target }) {
+  async function searchMovies({ target }) {
+    const query = target.value;
+    console.log(query);
+    await moviesData.searchMovies(query);
+    moviesList.createMoviesList(moviesData);
+  }
+
+  async function onChangePage({ target }) {
     if (target.dataset.page) {
-      pagination.changePage(+target.dataset.page);
+      console.log(target.dataset.page);
+      moviesData.newCurrentPage = +target.dataset.page;
+      init();
     }
   }
 
@@ -53,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function onShowModal({ target }) {
     const movieCard = target.closest('div[data-id]');
     if (movieCard) {
-      console.log(movieCard);
-      modal.showModal(movieCard);
+      const movie = checkMovieModalData(movieCard);
+      modal.showModal(movie);
     }
   }
 });

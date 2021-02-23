@@ -1,5 +1,3 @@
-import movies from '../store/movies';
-
 class Modal {
   constructor() {
     this.mainModal = document.getElementById('movieModal');
@@ -8,22 +6,21 @@ class Modal {
     this.movie = null;
   }
 
-  showModal(element) {
-    const id = Modal.getMovieID(element);
-    console.log(id);
+  showModal(movie) {
+    /* const id = Modal.getMovieID(element);
     if (!id) return;
-    const movie = movies.getMovie(id);
+    const movie = movies.getMovie(id); */
     if (!movie) return;
     if (movie !== this.movie) {
       this.movie = movie;
-      this.changeModalContainer(this.movie);
+      this.changeModalContainer();
     }
     this.mainModal.style.display = 'block';
   }
 
-  changeModalContainer(movie) {
+  changeModalContainer() {
     this.modalContainer.innerHTML = '';
-    const fragment = Modal.modalTemplate(movie);
+    const fragment = Modal.modalTemplate(this.movie);
     this.modalContainer.insertAdjacentHTML('afterbegin', fragment);
   }
 
@@ -58,7 +55,6 @@ class Modal {
     for (let i = 0; i < Math.round(rating); i++) {
       fragment += filledStar;
     }
-    console.log((ceilRating - rating) * 10);
     if ((ceilRating - rating) * 10 > 5) {
       fragment += halfFilledStar;
     }

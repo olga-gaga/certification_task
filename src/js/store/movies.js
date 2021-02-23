@@ -1,20 +1,25 @@
 import apiService from '../services/apiService';
-import moviesList from '../views/moviesList';
 
 class Movies {
   constructor(api) {
     this.url = new URL(window.location.href);
     this.api = api;
     this.moviesPerPage = 12;
-    this.currentPage = 1;
+    console.log('page', this.url.searchParams.get('page'));
+    this.currentPage = Number(this.url.searchParams.get('page')) || 1;
+    this.minPage = 1;
+    this.maxPage = Math.ceil(this.api.numberOfIDs / this.moviesPerPage) || 1;
     this.query = null;
     this.isSearch = false;
     this.moviesData = {};
   }
 
   set isSearchValue(value) {
-    this.isSearch = value;
-    moviesList.setTitle();
+    const newValue = Boolean(value);
+    this.isSearch = newValue;
+    if (!newValue) {
+      this.getMoviesIDsPerPage();
+    }
   }
 
   get isSearchValue() {
@@ -22,7 +27,6 @@ class Movies {
   }
 
   async getMoviesIDsPerPage() {
-    this.isSearchValue = false;
     const range = {
       from: this.currentPage * this.moviesPerPage - this.moviesPerPage,
       to: this.currentPage * this.moviesPerPage,
@@ -33,7 +37,6 @@ class Movies {
 
   set movies(value) {
     this.moviesData = value;
-    moviesList.createMoviesList();
   }
 
   get movies() {
@@ -42,19 +45,19 @@ class Movies {
 
   set newCurrentPage(page) {
     if (this.currentPage !== page && typeof page === 'number') {
+      this.url.searchParams.set('page', page);
+      window.location.href = this.url;
       this.currentPage = page;
-      this.movies = this.getMoviesIDsPerPage();
-      console.log(this.movies);
     }
   }
 
   async searchMovies(query) {
     if (!query) {
       this.isSearchValue = false;
-      this.getMoviesIDsPerPage();
       return;
     }
     const searchMovies = await this.api.fetchSearchMovies(query);
+    console.log(searchMovies);
     if (!searchMovies) {
       this.isSearchValue = false;
       return;
@@ -73,23 +76,31 @@ class Movies {
     return this.url.searchParams.get('page');
   }
 
-  get maxPage() {
-    return Math.ceil(this.api.numberOfIDs / this.moviesPerPage) || 1;
-  }
-
-  getMovie(imdbID) {
-    console.log(this.movies);
-    if (imdbID /* && this.movies.hasOwnProperty(imdbID) */) {
-      return this.movies[imdbID];
-    }
-    return {};
+  get movie() {
+    return (imdbID) => {
+      if (imdbID /* && this.movies.hasOwnProperty(imdbID) */) {
+        return this.movies[imdbID];
+      }
+      return {};
+    };
   }
 
   static createMoviesObject(movies) {
     return movies.reduce((acc, movie) => {
-      acc[movie.imdbID] = movie;
+      const newMovie = Movies.checkMovieData(movie);
+      acc[movie.imdbID] = newMovie;
       return acc;
     }, {});
+  }
+
+  static checkMovieData(movie) {
+    const newMovie = { ...movie };
+    Object.entries(newMovie).forEach(([key, value]) => {
+      if (!value) {
+        newMovie[key] = 'N/A';
+      }
+    });
+    return newMovie;
   }
 }
 

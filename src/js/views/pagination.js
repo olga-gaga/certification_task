@@ -1,31 +1,19 @@
-import moviesStore from '../store/movies';
-import moviesListView from './moviesList';
-
 class Pagination {
-  constructor(moviesData, moviesList) {
+  constructor() {
     this.paginationContainer = document.querySelector('.pagination');
-    this.moviesData = moviesData;
-    this.moviesList = moviesList;
     this.maxNumberOfButtons = 5;
     this.minPage = 1;
-    this.maxPage = this.moviesData.maxPage;
+    this.maxPage = 1;
     console.log(this.maxPage);
   }
 
-  initPagination() {
+  initPagination({ minPage, maxPage, currentPage }) {
     this.paginationContainer.innerHTML = '';
-    const fragment = Pagination.paginationTemplate(this.minPage, this.maxPage, this.moviesData.currentPage);
+    const fragment = Pagination.paginationTemplate({ minPage, maxPage, currentPage });
     this.paginationContainer.insertAdjacentHTML('afterbegin', fragment);
   }
 
-  changePage(page) {
-    if (this.moviesData.currentPage === page) return;
-    this.moviesData.newCurrentPage = page;
-    this.moviesList.createMoviesList();
-    this.initPagination();
-  }
-
-  static paginationTemplate(minPage, maxPage, currentPage) {
+  static paginationTemplate({ minPage, maxPage, currentPage }) {
     const disabled = 'hidden';
     return `
       <button type="button" data-page="${minPage}" class="btn btn-outline-light ${currentPage === minPage ? disabled : ''}">«</button>
@@ -52,5 +40,5 @@ class Pagination {
   }
 }
 
-const pagination = new Pagination(moviesStore, moviesListView);
+const pagination = new Pagination();
 export default pagination;
