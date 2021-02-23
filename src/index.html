@@ -30,7 +30,7 @@
               </a>
             </div>
             <div class="d-none d-sm-block col-sm-6">
-              <input placeholder="Search" type="text" class="sc-ifAKCX kTyHlr form-control" value="">
+              <input placeholder="Search" type="text" class="sc-ifAKCX kTyHlr form-control search" value="">
             </div>
           </div>
         </div>
@@ -38,20 +38,20 @@
     </nav>
     <div class="movies-container">
       <div class="container">
-        <h3 class="text-white mb-4 sc-kAzzGY duMhxZ">IMDB Top 250</h3>
+        <h3 class="text-white mb-4 sc-kAzzGY duMhxZ title"></h3>
         <div class="row">
           
         </div>
-        <div role="group" class="d-block text-center mb-4 btn-group">
-          <button type="button" class="btn btn-outline-light">«</button>
-          <button type="button" class="btn btn-outline-light">Previous</button>
+        <div role="group" class="d-block text-center mb-4 btn-group pagination">
+          <!--<button type="button" data-page="1" class="btn btn-outline-light">«</button>
+          <button type="button" data-page="-1" class="btn btn-outline-light">Previous</button>
           <button type="button" data-page="1" class="btn btn-light">1</button>
           <button type="button" data-page="2" class="btn btn-outline-light">2</button>
           <button type="button" data-page="3" class="btn btn-outline-light">3</button>
           <button type="button" data-page="4" class="btn btn-outline-light">4</button>
           <button type="button" data-page="5" class="btn btn-outline-light">5</button>
-          <button type="button" class="btn btn-outline-light">Next</button>
-          <button type="button" class="btn btn-outline-light">»</button>
+          <button type="button" data-page="+1" class="btn btn-outline-light" >Next</button>
+          <button type="button" class="btn btn-outline-light">»</button> -->
         </div>
       </div>
     </div>
@@ -63,89 +63,17 @@
     </div>
   </main>
   <!-- установите это на модальное окно что бы его увидеть style="display: block;" -->
-  <div class="modal fade show" role="dialog" tabindex="-1">
+  <div class="modal fade show" id="movieModal" role="dialog" tabindex="-1">
     <div class="modal-dialog sc-EHOje hSpdwA modal-xl" role="document">
       <div class="modal-content"><div class="sc-bZQynM kWyGiU modal-header">
         <h5 class="modal-title">Movie view</h5>
-        <button type="button" class="close" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="sc-gzVnrw bwGZMA modal-body">
         <div class="row">
-          <div class="col-12 col-sm-4">
-            <div class="mb-3 sc-VigVT htVHHo">
-              <div class="sc-jTzLTM eKtFoc" style="background-image: url(&quot;https://m.media-amazon.com/images/M/MV5BMDZlYzAyZDctMjA0YS00ODZkLTljMjItYTI4NTNlNzJmNTVkXkEyXkFqcGdeQXVyMTgyOTkwOTk@._V1_SX800.jpg&quot;);"></div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-8">
-            <h3 class="sc-kAzzGY duMhxZ">Kavoka Spi</h3>
-            <div class="my-2 sc-chPdSV hEtnib">
-              <span class="text-warning mr-2">
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-                <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                  <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path></svg><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path></svg><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
-                </svg>
-              </span>
-              8.7 / 10
-            </div>
-            <div class="lead">
-                Luke Skywalker, Han Solo, Princess Leia and Chewbacca face attack by the Imperial forces and its AT-AT walkers on the ice planet Hoth. While Han and Leia escape in the Millennium Falcon, Luke travels to Dagobah in search of Yoda. Only with the Jedi master's help will Luke survive when the dark side of the Force beckons him into the ultimate duel with Darth Vader.
-            </div>
-            <div class="my-3 mb-4">
-              <span class="mr-2 badge badge-success">2008</span>
-              <span class="mr-2 badge badge-success">0h 24min</span>
-              <span class="mr-2 badge badge-success">Short</span>
-              <span class="mr-2 badge badge-success">Drama</span>
-            </div><table class="table small">
-              <tbody>
-                <tr>
-                  <th>Production</th>
-                  <td>N/A</td>
-                </tr>
-                <tr>
-                  <th>Country</th>
-                  <td>Iraq</td>
-                </tr>
-                <tr>
-                  <th>Director</th>
-                  <td>Viyan Mayi</td>
-                </tr>
-                <tr>
-                  <th>Writer</th>
-                  <td>Viyan Mayi</td>
-                </tr>
-                <tr>
-                  <th>Actors</th>
-                  <td>Narin Jang, Siyar Tayib</td>
-                </tr>
-                <tr>
-                  <th>Awards</th>
-                  <td>N/A</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
         </div>
       </div>
     </div>

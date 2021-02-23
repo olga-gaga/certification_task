@@ -8,6 +8,9 @@
   "rules": {
     "no-console": "off",
     "func-names": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "no-plusplus": "off",
+    "max-len": ["error", 300],
+    "import/no-cycle": "off"
   }
 }

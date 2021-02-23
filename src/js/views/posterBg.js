@@ -9,7 +9,6 @@ class PosterBg {
     if (!newBg) return;
     if (newBg !== this.currentBg) {
       this.currentBg = newBg;
-      console.log(newBg);
       this.container.style.backgroundImage = this.currentBg;
     }
   }
