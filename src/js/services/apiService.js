@@ -2,6 +2,7 @@ import axios from '../plugins/axios';
 import top250imdb from './mock/imdb_top250.json';
 import notifyView from '../views/notification';
 import loader from '../views/loader';
+
 class ApiService {
   constructor(IDs) {
     this.IDs = IDs;
@@ -18,7 +19,6 @@ class ApiService {
       loader.toggleLoader(true);
       this.isSearch = true;
       const response = await axios.get(`/?s=${query}`);
-      console.log(response);
       if (response.Error) {
         throw Error(response.Error);
       }

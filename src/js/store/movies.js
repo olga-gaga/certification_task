@@ -4,11 +4,11 @@ class Movies {
   constructor(api) {
     this.url = new URL(window.location.href);
     this.api = api;
-    this.moviesPerPage = 12;
-    console.log('page', this.url.searchParams.get('page'));
-    this.currentPage = Number(this.url.searchParams.get('page')) || 1;
     this.minPage = 1;
+    this.moviesPerPage = 12;
     this.maxPage = Math.ceil(this.api.numberOfIDs / this.moviesPerPage) || 1;
+    this.currentPage = this.minPage;
+    this.newCurrentPage = this.param;
     this.query = null;
     this.isSearch = false;
     this.moviesData = {};
@@ -44,11 +44,15 @@ class Movies {
   }
 
   set newCurrentPage(page) {
-    if (this.currentPage !== page && typeof page === 'number') {
-      this.url.searchParams.set('page', page);
-      window.location.href = this.url;
-      this.currentPage = page;
+    const numberPage = parseInt(page, 10);
+    if (page < this.minPage || !numberPage) {
+      this.currentPage = this.minPage;
+    } else if (page > this.maxPage) {
+      this.currentPage = this.maxPage;
+    } else {
+      this.currentPage = numberPage;
     }
+    this.param = this.currentPage || 1;
   }
 
   async searchMovies(query) {
@@ -57,7 +61,6 @@ class Movies {
       return;
     }
     const searchMovies = await this.api.fetchSearchMovies(query);
-    console.log(searchMovies);
     if (!searchMovies) {
       this.isSearchValue = false;
       return;
@@ -65,15 +68,18 @@ class Movies {
     this.query = query;
     this.isSearchValue = true;
     this.movies = Movies.createMoviesObject(searchMovies);
-    console.log(this.movies);
+    return this.isSearchValue;
   }
 
   set param(page) {
+    const urlPage = Number(this.url.searchParams.get('page'));
+    if (urlPage === page || !page) return;
     this.url.searchParams.set('page', page);
+    window.location.href = this.url;
   }
 
   get param() {
-    return this.url.searchParams.get('page');
+    return this.url.searchParams.get('page') || 1;
   }
 
   get movie() {

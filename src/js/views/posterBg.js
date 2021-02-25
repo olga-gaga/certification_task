@@ -1,7 +1,6 @@
 class PosterBg {
   constructor() {
     this.container = document.querySelector('.poster-page-bg');
-    // this.backgrond = 'linear-gradient(45deg, rgb(0, 3, 38) 0%, rgb(82, 15, 117) 100%)';
     this.currentBg = null;
   }
 

@@ -12,19 +12,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const movieContainer = document.querySelector('.movies-container .row');
   const paginationContainer = document.querySelector('.pagination');
   const searchInput = document.querySelector('nav .search');
-  console.log(paginationContainer);
+  const modalContainer = document.querySelector('.modal-container');
   // Events
   movieContainer.addEventListener('mouseover', onChangeBg);
   movieContainer.addEventListener('click', onShowModal);
   paginationContainer.addEventListener('click', onChangePage);
   searchInput.addEventListener('input', delay((e) => searchMovies(e), 1000));
-  // closeModal.addEventListener('click', modal.close);
+  modalContainer.addEventListener('click', onCloseModal);
 
   async function init() {
     await moviesData.getMoviesIDsPerPage();
-    moviesList.setTitle(moviesData);
-    moviesList.createMoviesList(moviesData);
-    pagination.initPagination(moviesData);
+    renderContent(moviesData);
+  }
+
+  function renderContent(data) {
+    moviesList.setTitle(data);
+    moviesList.createMoviesList(data);
+    pagination.initPagination(data);
   }
 
   function delay(callback, ms = 0) {
@@ -43,14 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function searchMovies({ target }) {
     const query = target.value;
-    console.log(query);
-    await moviesData.searchMovies(query);
-    moviesList.createMoviesList(moviesData);
+    const search = await moviesData.searchMovies(query);
+    if (!search) {
+      init();
+      return;
+    }
+    renderContent(moviesData);
   }
 
   async function onChangePage({ target }) {
     if (target.dataset.page) {
-      console.log(target.dataset.page);
       moviesData.newCurrentPage = +target.dataset.page;
       init();
     }
@@ -67,6 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (movieCard) {
       const movie = checkMovieModalData(movieCard);
       modal.showModal(movie);
+    }
+  }
+
+  function onCloseModal({ target }) {
+    const button = target.closest('.close');
+    if (button) {
+      modal.closeModal();
     }
   }
 });

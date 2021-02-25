@@ -4,11 +4,13 @@ class Pagination {
     this.maxNumberOfButtons = 5;
     this.minPage = 1;
     this.maxPage = 1;
-    console.log(this.maxPage);
   }
 
-  initPagination({ minPage, maxPage, currentPage }) {
+  initPagination({
+    minPage, maxPage, currentPage, isSearch,
+  }) {
     this.paginationContainer.innerHTML = '';
+    if (isSearch) return;
     const fragment = Pagination.paginationTemplate({ minPage, maxPage, currentPage });
     this.paginationContainer.insertAdjacentHTML('afterbegin', fragment);
   }
@@ -33,9 +35,11 @@ class Pagination {
 
     for (let i = 0; i <= shift; i++) {
       const page = startPage + i;
-      fragment += `<button type="button" data-page="${page}" class="btn ${page === currentPage ? 'btn-light' : 'btn-outline-light'}">${page}</button>`;
+      fragment += `
+        <button type="button" data-page="${page}" class="btn ${page === currentPage ? 'btn-light' : 'btn-outline-light'}">
+          ${page}
+        </button>`;
     }
-    console.log(fragment);
     return fragment;
   }
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server",
     "build": "webpack",
+    "test": "jest",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix --color"
   },

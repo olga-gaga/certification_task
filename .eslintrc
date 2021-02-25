@@ -6,11 +6,10 @@
   },
   "extends": ["airbnb/base"],
   "rules": {
-    "no-console": "off",
     "func-names": "off",
     "no-use-before-define": "off",
     "no-plusplus": "off",
-    "max-len": ["error", 300],
+    "max-len": ["error", 150],
     "consistent-return": "off"
   }
 }
