@@ -2,6 +2,6 @@ function returnData(response) {
   return response.data;
 }
 
-export default function (axios) {
+export default (axios) => {
   axios.interceptors.response.use(returnData);
-}
+};

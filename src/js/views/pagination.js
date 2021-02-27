@@ -8,14 +8,14 @@ class Pagination {
 
   initPagination({
     minPage, maxPage, currentPage, isSearch,
-  }) {
+  } = {}) {
     this.paginationContainer.innerHTML = '';
     if (isSearch) return;
     const fragment = Pagination.paginationTemplate({ minPage, maxPage, currentPage });
     this.paginationContainer.insertAdjacentHTML('afterbegin', fragment);
   }
 
-  static paginationTemplate({ minPage, maxPage, currentPage }) {
+  static paginationTemplate({ minPage, maxPage, currentPage } = {}) {
     const disabled = 'hidden';
     return `
       <button type="button" data-page="${minPage}" class="btn btn-outline-light ${currentPage === minPage ? disabled : ''}">«</button>
@@ -27,20 +27,23 @@ class Pagination {
 
   static buttonsTemplate(maxPage, currentPage) {
     const shift = 4;
-    let startPage = 1;
-    let fragment = '';
-    if (currentPage < shift) startPage = 1;
-    else if (currentPage <= maxPage - shift) startPage = currentPage - 2;
-    else startPage = maxPage - shift;
-
-    for (let i = 0; i <= shift; i++) {
+    const startPage = Pagination.getStartPage(currentPage, maxPage, shift);
+    const fragment = [...Array(shift + 1).keys()].reduce((acc, i) => {
       const page = startPage + i;
-      fragment += `
-        <button type="button" data-page="${page}" class="btn ${page === currentPage ? 'btn-light' : 'btn-outline-light'}">
-          ${page}
-        </button>`;
-    }
+      const btnClass = (page === currentPage) ? 'btn-light' : 'btn-outline-light';
+      return `${acc} <button type="button" data-page="${page}" class="btn ${btnClass}"> ${page} </button>`;
+    }, '');
     return fragment;
+  }
+
+  static getStartPage(currentPage, maxPage, shift) {
+    if (currentPage < shift) {
+      return 1;
+    }
+    if (currentPage <= maxPage - shift) {
+      return currentPage - 2;
+    }
+    return maxPage - shift;
   }
 }
 

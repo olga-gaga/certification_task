@@ -5,7 +5,9 @@ class Loader {
   }
 
   toggleLoader(toggle) {
-    if (this.toggle === toggle) return;
+    if (this.toggle === toggle) {
+      return;
+    }
     this.loader.classList.toggle('hidden');
     this.toggle = Boolean(toggle);
   }

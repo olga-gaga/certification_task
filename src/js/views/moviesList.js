@@ -4,12 +4,16 @@ export class MoviesList {
     this.container = document.querySelector('.movies-container .row');
   }
 
-  setTitle({ isSearch, query }) {
+  setTitle(isSearch, query) {
     const title = isSearch ? `Search: ${query}` : 'IMDB Top 250';
     this.titleContainer.textContent = title;
   }
 
-  async createMoviesList({ moviesData }) {
+  async createMoviesList({ moviesData, isSearch, query } = {}) {
+    if (!moviesData) {
+      return;
+    }
+    this.setTitle(isSearch, query);
     const fragment = Object.values(moviesData)
       .reduce((acc, movie) => acc + MoviesList.movieItemTemplate(movie), '');
     this.container.innerHTML = '';
@@ -18,7 +22,7 @@ export class MoviesList {
 
   static movieItemTemplate({
     imdbID, Poster, Title, Year,
-  }) {
+  } = {}) {
     return `
       <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-toggle="modal" data-target="#movieModal" data-id="${imdbID}">
         <div class="mb-3 sc-jzJRlG gVuklN">
@@ -35,7 +39,7 @@ export class MoviesList {
       </div>`;
   }
 
-  static noPosterTemplate(Poster) {
+  static noPosterTemplate(Poster = '') {
     const noPoster = `
     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="film" class="svg-inline--fa fa-film fa-w-16 fa-4x " 
     role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -49,7 +53,7 @@ export class MoviesList {
       12-12h40c6.6 0 12 5.4 12 12v40zm0-96c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 
       12v40zm0-96c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40z"></path>
     </svg>`;
-    const poster = Poster !== 'N/A' ? `style="background:url(${Poster});"` : '';
+    const poster = Poster !== 'N/A' ? `style="background-image: url(${Poster});"` : '';
 
     return `
     <div class="sc-jTzLTM eKtFoc movie-poster kGRTUe" ${poster} > ${poster ? '' : noPoster}</div>

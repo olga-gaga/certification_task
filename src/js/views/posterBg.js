@@ -5,11 +5,11 @@ class PosterBg {
   }
 
   changePoster(newBg) {
-    if (!newBg) return;
-    if (newBg !== this.currentBg) {
-      this.currentBg = newBg;
-      this.container.style.backgroundImage = this.currentBg;
+    if (!newBg || newBg === this.currentBg) {
+      return;
     }
+    this.currentBg = newBg;
+    this.container.style.backgroundImage = this.currentBg;
   }
 }
 

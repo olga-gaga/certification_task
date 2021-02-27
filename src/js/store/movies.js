@@ -1,5 +1,6 @@
 import apiService from '../services/apiService';
 import top250imdb from './mock/imdb_top250.json';
+
 export class Movies {
   constructor(api, IDs) {
     this.url = new URL(window.location.href);
@@ -8,7 +9,6 @@ export class Movies {
     this.minPage = 1;
     this.moviesPerPage = 12;
     this.maxPage = Math.ceil(this.IDs.length / this.moviesPerPage) || 1;
-    this._currentPage = this.minPage;
     this.currentPage = this.param || 1;
     this.query = null;
     this._isSearch = false;
@@ -23,67 +23,40 @@ export class Movies {
     }
   }
 
-  get isSearch() {
-    return this._isSearch;
-  }
-
-  async getMoviesIDsPerPage() {
-    const slicedIDs = Movies.getRangeIDs(this);
-    console.log(slicedIDs);
-    const newMovies = await this.api.fetchMovies(slicedIDs);
-    this.moviesData = Movies.serializeMovies(newMovies);
-    console.dir(this.moviesData);
-    return this.moviesData;
+  set param(page) {
+    if (!page) {
+      return;
+    }
+    const urlPage = Number(this.url.searchParams.get('page')) || 1;
+    if (urlPage === page || !page) {
+      return;
+    }
+    this.url.searchParams.set('page', page);
+    history.pushState(null, null, this.url);
   }
 
   set moviesData(value) {
     if (typeof value !== 'object') {
       this._moviesData = {};
+      return;
     }
     this._moviesData = value;
   }
 
-  get moviesData() {
-    return this._moviesData;
-  }
-
   set currentPage(page) {
+    if (!page) {
+      return;
+    }
     this._currentPage = this.checkPage(page);
     this.param = this._currentPage || 1;
   }
 
+  get moviesData() {
+    return this._moviesData || {};
+  }
+
   get currentPage() {
-    return this._currentPage;
-  }
-
-  async searchMovies(query) {
-    if (!query) {
-      this._isSearch = false;
-      return;
-    }
-    const searchIDs = await this.api.getSearchIDs(query);
-    console.log(searchIDs);
-    if(!searchIDs) {
-      this._isSearch = false;
-      return; 
-    }
-    const searchMovies = await this.api.fetchMovies(searchIDs);
-    console.log(searchMovies);
-    if (!searchMovies) {
-      this._isSearch = false;
-      return;
-    }
-    this.query = query;
-    this._isSearch = true;
-    this.moviesData = Movies.serializeMovies(searchMovies);
-    return this._isSearch;
-  }
-
-  set param(page) {
-    const urlPage = Number(this.url.searchParams.get('page'));
-    if (urlPage === page || !page) return;
-    this.url.searchParams.set('page', page);
-    history.pushState(null, null, this.url);
+    return this._currentPage || this.minPage;
   }
 
   get param() {
@@ -92,11 +65,46 @@ export class Movies {
 
   get movie() {
     return (imdbID) => {
-      if (imdbID /* && this.movies.hasOwnProperty(imdbID) */) {
-        return this._moviesData[imdbID];
+      if (imdbID) {
+        return this._moviesData[imdbID] || {};
       }
       return {};
     };
+  }
+
+  get isSearch() {
+    return this._isSearch || false;
+  }
+
+  async getMoviesIDsPerPage() {
+    const slicedIDs = Movies.getRangeIDs(this);
+    const newMovies = await this.api.fetchMovies(slicedIDs);
+    if (!newMovies) {
+      return {};
+    }
+    this.moviesData = Movies.serializeMovies(newMovies);
+    return this.moviesData;
+  }
+
+  async searchMovies(query) {
+    if (!query) {
+      this.isSearch = false;
+      return this.isSearch;
+    }
+    const searchIDs = await this.api.getSearchIDs(query);
+    if (!searchIDs) {
+      this.isSearch = false;
+      return this.isSearch;
+    }
+    const searchMovies = await this.api.fetchMovies(searchIDs);
+    if (!searchMovies) {
+      this.isSearch = false;
+      return this.isSearch;
+    }
+    this.query = query;
+    this.isSearch = true;
+    this.moviesData = Movies.serializeMovies(searchMovies);
+    return this.moviesData;
   }
 
   checkPage(page) {
@@ -122,6 +130,9 @@ export class Movies {
   }
 
   static checkMovieData(movie) {
+    if (!movie || typeof movie !== 'object') {
+      return {};
+    }
     const newMovie = { ...movie };
     Object.entries(newMovie).forEach(([key, value]) => {
       if (!value) {
@@ -134,7 +145,6 @@ export class Movies {
   static getRangeIDs({ currentPage, moviesPerPage, IDs }) {
     const from = currentPage * moviesPerPage - moviesPerPage;
     const to = currentPage * moviesPerPage;
-    console.log(to > IDs.length - 1, to, IDs.length);
     if (!IDs.length || Number.isNaN(from) || Number.isNaN(to)) {
       return [];
     }

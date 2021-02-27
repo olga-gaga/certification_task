@@ -6,8 +6,11 @@ class Modal {
   }
 
   showModal(movie) {
-    if (!movie) return;
-    this.changeModalContainer(movie);
+    if (!movie) {
+      return;
+    }
+    const fragment = Modal.modalTemplate(movie);
+    this.container.insertAdjacentHTML('afterbegin', fragment);
     this.toggleClasses();
   }
 
@@ -24,17 +27,14 @@ class Modal {
     document.body.classList.toggle('modal-open');
   }
 
-  changeModalContainer(movie) {
-    const fragment = Modal.modalTemplate(movie);
-    this.container.insertAdjacentHTML('afterbegin', fragment);
-  }
-
   static overlayTemplate() {
     return '<div class="modal-backdrop show"></div>';
   }
 
   static starsTemplate(rating) {
-    const ceilRating = Math.ceil(rating);
+    if (!rating || Number.isNaN(rating)) {
+      return '';
+    }
     const filledStar = `
       <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18 " 
       role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
@@ -59,19 +59,11 @@ class Modal {
         105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 
         139 20.2-100.6 98z"></path>
       </svg>`;
-    let fragment = '';
-    for (let i = 0; i < Math.round(rating); i++) {
-      fragment += filledStar;
-    }
-    if ((ceilRating - rating) * 10 > 5) {
-      fragment += halfFilledStar;
-    }
-    if (ceilRating < 10) {
-      for (let i = 0; i < 10 - ceilRating; i++) {
-        fragment += unfilledStar;
-      }
-    }
-    return fragment;
+    const maxCount = 10;
+    const ceilRating = Math.ceil(rating);
+    const roundRaiting = Math.round(rating);
+    const fragment = filledStar.repeat(roundRaiting) + halfFilledStar.repeat(ceilRating - roundRaiting) + unfilledStar.repeat(maxCount - ceilRating);
+    return fragment || '';
   }
 
   static modalTemplate({
