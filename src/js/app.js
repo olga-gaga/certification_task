@@ -4,6 +4,8 @@ import posterBg from './views/posterBg';
 import modal from './views/modal';
 import pagination from './views/pagination';
 import moviesData from './store/movies';
+import notifyView from './views/notifyAlert';
+import loader from './views/loader';
 
 document.addEventListener('DOMContentLoaded', () => {
   init();
@@ -21,8 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
   modalContainer.addEventListener('click', onCloseModal);
 
   async function init() {
-    await moviesData.getMoviesIDsPerPage();
-    renderContent(moviesData);
+    try {
+      loader.toggleLoader(true);
+      await moviesData.getMoviesIDsPerPage();
+      renderContent(moviesData);
+    } catch (error) {
+      notifyView.renderNotify(error);
+      return Promise.reject(error);
+    } finally {
+      loader.toggleLoader(false);
+    }
   }
 
   function renderContent(data) {
@@ -46,18 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function searchMovies({ target }) {
-    const query = target.value;
-    const search = await moviesData.searchMovies(query);
-    if (!search) {
-      init();
-      return;
+    try {
+      const query = target.value;
+      loader.toggleLoader(true);
+      const search = await moviesData.searchMovies(query);
+      if (!search) {
+        init();
+        return;
+      }
+      renderContent(moviesData);
+    } catch (error) {
+      notifyView.renderNotify(error);
+      return Promise.reject(error);
+    } finally {
+      loader.toggleLoader(false);
     }
-    renderContent(moviesData);
   }
 
   async function onChangePage({ target }) {
     if (target.dataset.page) {
-      moviesData.newCurrentPage = +target.dataset.page;
+      moviesData.currentPage = +target.dataset.page;
       init();
     }
   }

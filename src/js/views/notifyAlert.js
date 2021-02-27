@@ -1,11 +1,13 @@
 class NotifyView {
   constructor() {
     this.container = document.querySelector('.errors');
-    this.message = 'Something went wrong';
   }
 
-  renderNotify({ message = this.message }) {
-    console.log(message);
+  renderNotify({ message } = {}) {
+    if (!message) {
+      return;
+    }
+    console.log(message, Date.now());
     const date = Date.now();
     const template = NotifyView.notifyTemplate({ date, message });
     this.container.insertAdjacentHTML('beforeend', template);

@@ -1,59 +1,40 @@
 import axios from '../plugins/axios';
-import top250imdb from './mock/imdb_top250.json';
-import notifyView from '../views/notification';
-import loader from '../views/loader';
 
-class ApiService {
-  constructor(IDs) {
-    this.IDs = IDs;
-    this.searchIDs = null;
-  }
-
-  get numberOfIDs() {
-    return this.IDs.length || 0;
-  }
-
-  async fetchSearchMovies(query) {
+export class ApiService {
+  async fetchMovies(IDs) {
     try {
-      if (!query) return;
-      loader.toggleLoader(true);
-      this.isSearch = true;
+      if (!Array.isArray(IDs)) {
+        throw Error(true)
+      }
+      const requests = IDs.map((id) => axios.get(`/?i=${id}`));
+      const result = await Promise.all(requests);
+      if (result.Error){
+        throw Error(result.Error);
+      }
+      return result || [];
+    } catch (error) {
+      return Promise.reject(error);
+    } 
+  }
+
+  async getSearchIDs(query) {
+    try {
+
+      if (!query) {
+        throw Error(true);
+      }
       const response = await axios.get(`/?s=${query}`);
-      if (response.Error) {
+      if(response.Error || !Array.isArray(response.Search)) {
         throw Error(response.Error);
       }
-      this.searchIDs = response.Search.map(({ imdbID }) => imdbID);
-      const result = await ApiService.getMoviesData(this.searchIDs);
-      return result;
+      const searchIDs = response.Search.map(({ imdbID }) => imdbID);
+      return searchIDs || [];
     } catch (error) {
-      notifyView.renderNotify(error);
       return Promise.reject(error);
-    } finally {
-      loader.toggleLoader(false);
     }
   }
 
-  async fetchMovies({ from, to }) {
-    try {
-      loader.toggleLoader(true);
-      const slicedIDs = this.IDs.slice(from, to);
-      return await ApiService.getMoviesData(slicedIDs);
-    } catch (error) {
-      notifyView.renderNotify(error);
-      return Promise.reject(error);
-    } finally {
-      loader.toggleLoader(false);
-    }
-  }
-
-  static async getMoviesData(slicedIDs) {
-    const requests = slicedIDs.map((id) => axios.get(`/?i=${id}`));
-    const result = await Promise.all(requests)
-      .then((value) => value)
-      .catch((error) => notifyView.renderNotify(error));
-    return result || [];
-  }
 }
 
-const api = new ApiService(top250imdb);
+const api = new ApiService();
 export default api;

@@ -2,14 +2,16 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
-  "extends": ["airbnb/base"],
+  "extends": ["airbnb/base", "plugin:jest/recommended"],
   "rules": {
     "func-names": "off",
     "no-use-before-define": "off",
     "no-plusplus": "off",
     "max-len": ["error", 150],
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "no-underscore-dangle": "off"
   }
 }

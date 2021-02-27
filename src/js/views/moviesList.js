@@ -9,8 +9,8 @@ export class MoviesList {
     this.titleContainer.textContent = title;
   }
 
-  async createMoviesList({ movies }) {
-    const fragment = Object.values(movies)
+  async createMoviesList({ moviesData }) {
+    const fragment = Object.values(moviesData)
       .reduce((acc, movie) => acc + MoviesList.movieItemTemplate(movie), '');
     this.container.innerHTML = '';
     this.container.insertAdjacentHTML('afterbegin', fragment);

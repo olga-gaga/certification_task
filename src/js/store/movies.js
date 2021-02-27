@@ -1,81 +1,89 @@
 import apiService from '../services/apiService';
-
-class Movies {
-  constructor(api) {
+import top250imdb from './mock/imdb_top250.json';
+export class Movies {
+  constructor(api, IDs) {
     this.url = new URL(window.location.href);
+    this.IDs = IDs;
     this.api = api;
     this.minPage = 1;
     this.moviesPerPage = 12;
-    this.maxPage = Math.ceil(this.api.numberOfIDs / this.moviesPerPage) || 1;
-    this.currentPage = this.minPage;
-    this.newCurrentPage = this.param;
+    this.maxPage = Math.ceil(this.IDs.length / this.moviesPerPage) || 1;
+    this._currentPage = this.minPage;
+    this.currentPage = this.param || 1;
     this.query = null;
-    this.isSearch = false;
-    this.moviesData = {};
+    this._isSearch = false;
+    this._moviesData = {};
   }
 
-  set isSearchValue(value) {
+  set isSearch(value) {
     const newValue = Boolean(value);
-    this.isSearch = newValue;
+    this._isSearch = newValue;
     if (!newValue) {
       this.getMoviesIDsPerPage();
     }
   }
 
-  get isSearchValue() {
-    return this.isSearch;
+  get isSearch() {
+    return this._isSearch;
   }
 
   async getMoviesIDsPerPage() {
-    const range = {
-      from: this.currentPage * this.moviesPerPage - this.moviesPerPage,
-      to: this.currentPage * this.moviesPerPage,
-    };
-    const newMovies = await this.api.fetchMovies(range);
-    this.movies = Movies.createMoviesObject(newMovies);
-  }
-
-  set movies(value) {
-    this.moviesData = value;
-  }
-
-  get movies() {
+    const slicedIDs = Movies.getRangeIDs(this);
+    console.log(slicedIDs);
+    const newMovies = await this.api.fetchMovies(slicedIDs);
+    this.moviesData = Movies.serializeMovies(newMovies);
+    console.dir(this.moviesData);
     return this.moviesData;
   }
 
-  set newCurrentPage(page) {
-    const numberPage = parseInt(page, 10);
-    if (page < this.minPage || !numberPage) {
-      this.currentPage = this.minPage;
-    } else if (page > this.maxPage) {
-      this.currentPage = this.maxPage;
-    } else {
-      this.currentPage = numberPage;
+  set moviesData(value) {
+    if (typeof value !== 'object') {
+      this._moviesData = {};
     }
-    this.param = this.currentPage || 1;
+    this._moviesData = value;
+  }
+
+  get moviesData() {
+    return this._moviesData;
+  }
+
+  set currentPage(page) {
+    this._currentPage = this.checkPage(page);
+    this.param = this._currentPage || 1;
+  }
+
+  get currentPage() {
+    return this._currentPage;
   }
 
   async searchMovies(query) {
     if (!query) {
-      this.isSearchValue = false;
+      this._isSearch = false;
       return;
     }
-    const searchMovies = await this.api.fetchSearchMovies(query);
+    const searchIDs = await this.api.getSearchIDs(query);
+    console.log(searchIDs);
+    if(!searchIDs) {
+      this._isSearch = false;
+      return; 
+    }
+    const searchMovies = await this.api.fetchMovies(searchIDs);
+    console.log(searchMovies);
     if (!searchMovies) {
-      this.isSearchValue = false;
+      this._isSearch = false;
       return;
     }
     this.query = query;
-    this.isSearchValue = true;
-    this.movies = Movies.createMoviesObject(searchMovies);
-    return this.isSearchValue;
+    this._isSearch = true;
+    this.moviesData = Movies.serializeMovies(searchMovies);
+    return this._isSearch;
   }
 
   set param(page) {
     const urlPage = Number(this.url.searchParams.get('page'));
     if (urlPage === page || !page) return;
     this.url.searchParams.set('page', page);
-    window.location.href = this.url;
+    history.pushState(null, null, this.url);
   }
 
   get param() {
@@ -85,13 +93,27 @@ class Movies {
   get movie() {
     return (imdbID) => {
       if (imdbID /* && this.movies.hasOwnProperty(imdbID) */) {
-        return this.movies[imdbID];
+        return this._moviesData[imdbID];
       }
       return {};
     };
   }
 
-  static createMoviesObject(movies) {
+  checkPage(page) {
+    const numberPage = parseInt(page, 10);
+    if (page < this.minPage || !numberPage) {
+      return this.minPage;
+    }
+    if (page > this.maxPage) {
+      return this.maxPage;
+    }
+    return numberPage;
+  }
+
+  static serializeMovies(movies) {
+    if (!Array.isArray(movies)) {
+      return {};
+    }
     return movies.reduce((acc, movie) => {
       const newMovie = Movies.checkMovieData(movie);
       acc[movie.imdbID] = newMovie;
@@ -108,8 +130,18 @@ class Movies {
     });
     return newMovie;
   }
+
+  static getRangeIDs({ currentPage, moviesPerPage, IDs }) {
+    const from = currentPage * moviesPerPage - moviesPerPage;
+    const to = currentPage * moviesPerPage;
+    console.log(to > IDs.length - 1, to, IDs.length);
+    if (!IDs.length || Number.isNaN(from) || Number.isNaN(to)) {
+      return [];
+    }
+    return IDs.slice(from, to);
+  }
 }
 
-const movies = new Movies(apiService);
+const movies = new Movies(apiService, top250imdb);
 
 export default movies;
