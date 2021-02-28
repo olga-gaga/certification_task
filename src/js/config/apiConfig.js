@@ -1,5 +1,5 @@
 const API_ENV = {
-  url: 'http://www.omdbapi.com',
+  url: 'https://www.omdbapi.com',
   key: '10015c8b',
 };
 
