@@ -27,7 +27,7 @@ class Pagination {
 
   static buttonsTemplate(maxPage, currentPage) {
     const shift = 4;
-    const startPage = Pagination.getStartPage(currentPage, maxPage, shift);
+    const startPage = Pagination.getStartPage({ currentPage, maxPage, shift });
     const fragment = [...Array(shift + 1).keys()].reduce((acc, i) => {
       const page = startPage + i;
       const btnClass = (page === currentPage) ? 'btn-light' : 'btn-outline-light';
@@ -36,7 +36,7 @@ class Pagination {
     return fragment;
   }
 
-  static getStartPage(currentPage, maxPage, shift) {
+  static getStartPage({ currentPage = 1, maxPage = 1, shift = 1 } = {}) {
     if (currentPage < shift) {
       return 1;
     }

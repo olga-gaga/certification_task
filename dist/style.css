@@ -111,7 +111,6 @@
   height: 100%;
   display: none;
   flex-direction: column;
-  -webkit-box-pack: justify;
   justify-content: space-between;
   background-color: rgba(0, 0, 0, 0.8);
   color: rgb(255, 255, 255);
@@ -142,10 +141,15 @@
 .kWyGiU {
   color: rgb(255, 255, 255);
   background: linear-gradient(45deg, rgb(0, 3, 38) 0%, rgb(82, 15, 117) 100%);
+  border-width: medium;
   border-width: initial;
   border-style: none;
+  border-color: currentColor;
   border-color: initial;
-  border-image: initial;
+  -o-border-image: none;
+     border-image: none;
+  -o-border-image: initial;
+     border-image: initial;
 }
 
 .kWyGiU .close {
@@ -214,8 +218,7 @@ svg:not(:root).svg-inline--fa {
   position: fixed;
   z-index: 100;
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
-  -webkit-box-pack: center;
   justify-content: center;
 }
+

@@ -24,9 +24,6 @@ export class Movies {
   }
 
   set param(page) {
-    if (!page) {
-      return;
-    }
     const urlPage = Number(this.url.searchParams.get('page')) || 1;
     if (urlPage === page || !page) {
       return;
@@ -36,11 +33,11 @@ export class Movies {
   }
 
   set moviesData(value) {
-    if (typeof value !== 'object') {
+    if (!Array.isArray(value)) {
       this._moviesData = {};
       return;
     }
-    this._moviesData = value;
+    this._moviesData = Movies.serializeMovies(value);
   }
 
   set currentPage(page) {
@@ -82,7 +79,7 @@ export class Movies {
     if (!newMovies) {
       return {};
     }
-    this.moviesData = Movies.serializeMovies(newMovies);
+    this.moviesData = newMovies || [];
     return this.moviesData;
   }
 
@@ -103,7 +100,7 @@ export class Movies {
     }
     this.query = query;
     this.isSearch = true;
-    this.moviesData = Movies.serializeMovies(searchMovies);
+    this.moviesData = searchMovies || [];
     return this.moviesData;
   }
 
